@@ -1,72 +1,278 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TREX Colour Game</title>
+
   <style>
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      padding: 20px;
+      padding: 16px;
       background: #101522;
-      color: white;
+      color: #fff;
       font-family: Arial, sans-serif;
     }
+
     .card {
-      max-width: 420px;
-      margin: 30px auto;
-      padding: 22px;
+      max-width: 480px;
+      margin: 18px auto;
+      padding: 20px;
       background: #1c2638;
       border-radius: 16px;
     }
-    h1 { text-align: center; }
-    input, button {
-      box-sizing: border-box;
-      width: 100%;
-      padding: 13px;
-      margin: 8px 0;
-      border: 0;
-      border-radius: 8px;
-    }
-    button {
-      background: #36c98f;
-      color: #101522;
-      font-weight: bold;
-    }
+
+    h1 { text-align: center; font-size: 27px; }
+
     .notice {
       color: #ffd36a;
       font-size: 13px;
       line-height: 1.5;
     }
+
+    input, button {
+      width: 100%;
+      padding: 13px;
+      margin: 7px 0;
+      border: 0;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+
+    input { background: #eaf0ff; color: #111; }
+
+    button {
+      background: #36c98f;
+      color: #101522;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .hidden { display: none !important; }
+
+    .balance { font-size: 22px; font-weight: bold; }
+
+    .colors {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .colors button { color: white; }
+    .red { background: #ef4444; }
+    .green { background: #16a34a; }
+    .violet { background: #8b5cf6; }
+    .secondary { background: #344258; color: white; }
+
+    #message, #history {
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
   </style>
 </head>
+
 <body>
   <div class="card">
     <h1>TREX COLOUR GAME</h1>
+
     <p class="notice">
       
     </p>
-    <h3>Virtual Balance: ₹<span id="balance">0</span></h3>
-    <input id="username" placeholder="Enter username">
-    <button onclick="signup()">Create Account</button>
-    <div id="message"></div>
+
+    <!-- Signup -->
+    <section id="signup">
+      <h3>Create  Account</h3>
+      <input
+        id="username"
+        placeholder="Choose username"
+        maxlength="20"
+        autocomplete="nickname"
+      >
+      <button onclick="signup()">Create Account</button>
+    </section>
+
+    <!-- Game -->
+    <section id="game" class="hidden">
+      <p>Welcome, <b id="player"></b></p>
+
+      <p class="balance">
+        Payment Credits: ₹<span id="balance">0</span>
+      </p>
+
+      <h3>Demo Top-up</h3>
+      <p>₹500 Money credits. </p>
+
+      <input
+        id="ref"
+        inputmode="numeric"
+        maxlength="12"
+        placeholder="12-digit utr , ref no. reference number"
+      >
+
+      <button onclick="topup()">Add ₹200 Credits</button>
+
+      <hr>
+
+      <h3>Colour trading Round</h3>
+      <p>Next round in: <b id="timer">60</b> seconds</p>
+
+      <div class="colors">
+        <button class="red" onclick="predict('Red')">RED</button>
+        <button class="green" onclick="predict('Green')">GREEN</button>
+        <button class="violet" onclick="predict('Violet')">VIOLET</button>
+      </div>
+
+      <p id="message">Choose a colour .</p>
+      <p id="history"></p>
+
+      <button class="secondary" onclick="logout()">
+        Log Out
+      </button>
+    </section>
   </div>
 
   <script>
-    function signup() {
-      const username =
-        document.getElementById("username").value.trim();
+    // Local browser storage: not a secure server account.
+    const USER_KEY = "trex_username";
+    const BALANCE_KEY = "trex_balance";
+    const CREDIT_KEY = "trex_credited";
 
-      if (!username) {
-        document.getElementById("message").textContent =
-          "Please enter a username.";
+    let username = localStorage.getItem(USER_KEY) || "";
+    let balance = Number(localStorage.getItem(BALANCE_KEY) || 0);
+    let credited = localStorage.getItem(CREDIT_KEY) === "true";
+
+    let prediction = "";
+    let round = 1;
+    let seconds = 60;
+
+    function saveAccount() {
+      localStorage.setItem(USER_KEY, username);
+      localStorage.setItem(BALANCE_KEY, String(balance));
+      localStorage.setItem(CREDIT_KEY, String(credited));
+      updateBalance();
+    }
+
+    function updateBalance() {
+      document.getElementById("balance").textContent = balance;
+    }
+
+    function signup() {
+      const name = document.getElementById("username").value.trim();
+
+      if (!name) {
+        alert("Username enter karo.");
         return;
       }
 
-      document.getElementById("message").textContent =
-        "Welcome, " + username + "! .";
+      username = name;
+      saveAccount();
+      showGame();
     }
+
+    function showGame() {
+      document.getElementById("player").textContent = username;
+      document.getElementById("signup").classList.add("hidden");
+      document.getElementById("game").classList.remove("hidden");
+      updateBalance();
+    }
+
+    function topup() {
+      const ref = document.getElementById("ref").value.trim();
+
+      if (!/^\d{12}$/.test(ref)) {
+        alert("12-digit demo reference number enter karo.");
+        return;
+      }
+
+      if (credited) {
+        alert(" top-up is browser session account mein pehle use ho chuka hai.");
+        return;
+      }
+
+      balance += 500;
+      credited = true;
+      saveAccount();
+
+      document.getElementById("ref").value = "";
+      document.getElementById("message").textContent =
+        "₹200  credits add .";
+    }
+
+    function predict(color) {
+      if (balance < 10) {
+        document.getElementById("message").textContent =
+          "Practice ke liye pehle  credits add karo.";
+        return;
+      }
+
+      prediction = color;
+
+      document.getElementById("message").textContent =
+        "Your prediction: " + color +
+        ". Result round ke end par aayega.";
+    }
+
+    function finishRound() {
+      const colors = ["Red", "Green", "Violet"];
+      const result = colors[Math.floor(Math.random() * colors.length)];
+
+      let text = "Round " + round + " result: " + result + ". ";
+
+      if (prediction && prediction === result) {
+        balance += 20;
+        text += "+20 credits.";
+      } else if (prediction) {
+        balance = Math.max(0, balance - 10);
+        text += "-10 credits.";
+      } else {
+        text += "No prediction made.";
+      }
+
+      saveAccount();
+
+      document.getElementById("history").textContent = text;
+      document.getElementById("message").textContent =
+        "New practice round started.";
+
+      prediction = "";
+      round++;
+      seconds = 60;
+    }
+
+    function logout() {
+      username = "";
+      prediction = "";
+
+      // Preserve balance and top-up status on this browser.
+      localStorage.removeItem(USER_KEY);
+
+      document.getElementById("game").classList.add("hidden");
+      document.getElementById("signup").classList.remove("hidden");
+      document.getElementById("username").value = "";
+      document.getElementById("message").textContent = "";
+    }
+
+    // Restore account on page reload.
+    if (username) {
+      showGame();
+    }
+
+    setInterval(function () {
+      if (document.getElementById("game").classList.contains("hidden")) {
+        return;
+      }
+
+      seconds--;
+      document.getElementById("timer").textContent = seconds;
+
+      if (seconds <= 0) {
+        finishRound();
+        document.getElementById("timer").textContent = seconds;
+      }
+    }, 1000);
   </script>
 </body>
 </html>
