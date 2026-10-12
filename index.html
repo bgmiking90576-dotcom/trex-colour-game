@@ -1,1 +1,73 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TREX Colour Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #101522;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    .card {
+      max-width: 420px;
+      margin: 30px auto;
+      padding: 22px;
+      background: #1c2638;
+      border-radius: 16px;
+    }
+    h1 { text-align: center; }
+    input, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0;
+      border: 0;
+      border-radius: 8px;
+    }
+    button {
+      background: #36c98f;
+      color: #101522;
+      font-weight: bold;
+    }
+    .notice {
+      color: #ffd36a;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>TREX COLOUR GAME</h1>
+    <p class="notice">
+      Practice mode only. Credits are virtual.
+      No real payments or withdrawals.
+    </p>
+    <h3>Virtual Balance: ₹<span id="balance">0</span></h3>
+    <input id="username" placeholder="Enter username">
+    <button onclick="signup()">Create Account</button>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    function signup() {
+      const username =
+        document.getElementById("username").value.trim();
+
+      if (!username) {
+        document.getElementById("message").textContent =
+          "Please enter a username.";
+        return;
+      }
+
+      document.getElementById("message").textContent =
+        "Welcome, " + username + "! Practice account ready.";
+    }
+  </script>
+</body>
+</html>
