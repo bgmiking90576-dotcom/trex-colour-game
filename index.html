@@ -400,7 +400,53 @@ function renderHistory() {
     $('history').appendChild(tr);
   });
 }
+
 function play() {
+  if (selected === null) {
+    message('gameMsg', 'First select a colour or number.');
+    return;
+  }
+
+  if (hasPlayedThisRound) {
+    message('gameMsg', 'Wait for the next round.');
+    return;
+  }
+
+  const bet = Number($('betAmount').value);
+
+  if (!Number.isFinite(bet) || bet < 10) {
+    message('gameMsg', 'Choose a valid bet amount.');
+    return;
+  }
+
+  if (!currentAccount() || currentAccount().balance < bet) {
+    message('gameMsg', 'Not enough  credits. Add credits first.');
+    return;
+  }
+
+  changeBalance(-bet);
+  hasPlayedThisRound = true;
+
+  pendingPrediction = {
+    choice: selected,
+    type: selectedType,
+    playedRound: round,
+    bet: bet
+  };
+
+  message(
+    'gameMsg',
+    'prediction saved. Bet: ' + bet +
+    ' credits. Correct result returns ' + (bet * 2) + ' credits total.'
+  );
+
+  selected = null;
+  selectedType = '';
+
+  document.querySelectorAll('.pick,.num')
+    .forEach(b => b.classList.remove('selected'));
+}
+  
   if (selected===null) { message('gameMsg','First select a colour or a number.'); return; }
   if (hasPlayedThisRound) { message('gameMsg','One prediction per round. Wait for the next round.'); return; }
   if (!currentAccount() || currentAccount().balance<10) {
