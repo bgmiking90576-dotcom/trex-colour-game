@@ -474,10 +474,16 @@ function finishRound() {
   if (pendingPrediction && pendingPrediction.playedRound===round) {
     const p=pendingPrediction;
     const won = p.type==='number' ? Number(p.choice)===n : p.choice===color;
-    if (won) {
-      changeBalance(20);
-      message('gameMsg','Correct prediction! 20 virtual credits returned. (10 entry + 10 net gain)');
-  }
+    
+if (won) {
+  changeBalance(p.bet * 2);
+  message(
+    'gameMsg',
+    'Correct prediction! ' + (p.bet * 2) +
+    '  credit returned in total.'
+  );
+}
+    
   pendingPrediction=null;
   round++;
   $('period').textContent='Round '+round;
