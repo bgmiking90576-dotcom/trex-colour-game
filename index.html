@@ -139,7 +139,19 @@ repeating-conic-gradient(#111 0% 25%,#fff 0% 50%) 0 0/13px 13px}
           </div>
 
         <div class="card">
-          <h3>1. Select a colour</h3>
+          
+<h3>Choose  bet amount</h3>
+<div class="field">
+  <label>Bet amount ( credits)</label>
+  <select id="betAmount">
+    <option value="10">₹10</option>
+    <option value="50">₹50</option>
+    <option value="100">₹100</option>
+    <option value="500">₹500</option>
+  </select>
+</div>
+<p class="muted">Correct prediction: 2× total credit return. Incorrect prediction: bet amount is deducted.</p>
+          
           <div class="colors">
             <button class="pick red" onclick="selectColor('Red',this)">RED</button>
             <button class="pick" style="background:#16a76a" onclick="selectColor('Green',this)">GREEN</button>
