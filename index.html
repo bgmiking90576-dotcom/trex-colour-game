@@ -1,278 +1,450 @@
 
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TREX Colour Game</title>
-
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 16px;
-      background: #101522;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    .card {
-      max-width: 480px;
-      margin: 18px auto;
-      padding: 20px;
-      background: #1c2638;
-      border-radius: 16px;
-    }
-
-    h1 { text-align: center; font-size: 27px; }
-
-    .notice {
-      color: #ffd36a;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 13px;
-      margin: 7px 0;
-      border: 0;
-      border-radius: 9px;
-      font-size: 16px;
-    }
-
-    input { background: #eaf0ff; color: #111; }
-
-    button {
-      background: #36c98f;
-      color: #101522;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .hidden { display: none !important; }
-
-    .balance { font-size: 22px; font-weight: bold; }
-
-    .colors {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .colors button { color: white; }
-    .red { background: #ef4444; }
-    .green { background: #16a34a; }
-    .violet { background: #8b5cf6; }
-    .secondary { background: #344258; color: white; }
-
-    #message, #history {
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T-REX Colour Game</title>
+<style>
+:root{--green:#159b63;--dark:#087748;--bg:#f2f5f7;--text:#17252d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--text)}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+.app{max-width:480px;min-height:100vh;margin:auto;background:#fff;padding-bottom:84px}
+header{background:linear-gradient(120deg,#087748,#20b978);color:white;padding:17px 16px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{font-size:23px;font-weight:900;letter-spacing:1px}
+.tag{font-size:10px;background:#ffffff24;padding:6px;border-radius:8px}
+.disclaimer{font-size:10px;text-align:center;background:#fff2cc;color:#765300;padding:8px;font-weight:bold}
+main{padding:14px}
+h2{font-size:18px;margin:5px 0 13px}
+h3{font-size:15px;margin:0 0 12px}
+.muted{color:#75818a;font-size:12px;line-height:1.5}
+.card{background:white;border:1px solid #e8edef;border-radius:14px;padding:15px;margin-bottom:13px;box-shadow:0 3px 12px #142d3908}
+.balance{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.money{font-size:25px;font-weight:800;margin-top:5px}
+.pill{font-size:10px;color:var(--dark);background:#e1f8ec;border-radius:20px;padding:6px 9px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.btn{padding:12px;border-radius:9px;font-weight:bold;color:white;background:var(--green)}
+.btn.secondary{background:#e9f7ef;color:var(--dark);border:1px solid #bce8cf}
+.btn.dark{background:#23343d}
+.btn.red{background:#ed4655}
+.btn.violet{background:#8654d9}
+.btn.orange{background:#f29b2e}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.full{width:100%;margin-top:10px}
+.field{margin:12px 0}
+.field label{display:block;font-size:12px;font-weight:bold;margin-bottom:6px}
+.field input,.field select{width:100%;padding:12px;border:1px solid #d9e0e3;border-radius:9px;background:white;outline-color:var(--green)}
+.auth{padding:25px 20px}
+.auth-logo{text-align:center;font-size:30px;font-weight:900;color:var(--green);margin:16px 0 6px}
+.auth-sub{text-align:center;color:#75818a;font-size:12px;margin-bottom:25px}
+.link{color:var(--green);font-weight:bold;background:none;padding:10px}
+.hidden{display:none!important}
+.game-head{background:#f3fbf6;border:1px solid #d6f0df;border-radius:12px;padding:14px;margin-bottom:12px}
+.period{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.timer{font-size:23px;color:var(--green);font-weight:900}
+.resultbox{display:flex;justify-content:center;align-items:center;gap:8px;margin:15px 0}
+.ball{width:39px;height:39px;border-radius:50%;display:grid;place-items:center;color:white;font-size:19px;font-weight:bold}
+.redbg{background:#ef4654}.greenbg{background:#15a86a}.purplebg{background:#8754d9}
+.colors{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.numbers{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.pick{padding:12px 3px;color:white;border-radius:8px;font-weight:bold}
+.num{border:1px solid #dfe5e7;border-radius:9px;padding:12px 0;background:white;font-weight:bold}
+.num.selected,.pick.selected{outline:3px solid #263b44;outline-offset:2px}
+.history{width:100%;border-collapse:collapse;font-size:12px}
+.history th,.history td{text-align:center;padding:9px 4px;border-bottom:1px solid #edf0f1}
+.qr{width:188px;height:188px;margin:12px auto;background:white;border:5px solid #fff;outline:1px solid #ddd;position:relative;display:grid;place-items:center;overflow:hidden}
+.qr-pattern{position:absolute;inset:0;background:
+repeating-conic-gradient(#111 0% 25%,#fff 0% 50%) 0 0/13px 13px}
+.qr-pattern:after{content:"";position:absolute;inset:0;background:#ffffff30}
+.qr-label{position:relative;background:#fff;color:#b3261e;border:2px solid #b3261e;padding:8px 5px;font-weight:900;font-size:15px;text-align:center;transform:rotate(-15deg)}
+.notice{background:#fff4df;color:#7b4b00;padding:11px;border-radius:9px;font-size:12px;line-height:1.5}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:white;border-top:1px solid #e3e9eb;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:5}
+.nav{background:white;color:#697780;font-size:10px;padding:5px 1px}
+.nav span{display:block;font-size:19px;margin-bottom:3px}
+.nav.active{color:var(--green);font-weight:bold}
+.small{font-size:11px}
+.center{text-align:center}
+.toast{font-size:12px;margin-top:10px;color:var(--dark);line-height:1.5}
+@media(min-width:481px){body{padding:15px 0}.app{border-radius:18px;overflow:hidden;box-shadow:0 5px 35px #20304016}.bottom{bottom:0}}
+</style>
 </head>
-
 <body>
-  <div class="card">
-    <h1>TREX COLOUR GAME</h1>
+<div class="app">
+  <header>
+    <div class="top">
+      <div>
+        <div class="brand">👑 T-REX</div>
+        <div style="font-size:11px;margin-top:4px">COLOUR GAME · PRACTICE</div>
+      </div>
+      <div class="tag">EARNING MODE</div>
+    </div>
+  </header>
+  <div class="disclaimer">100% REAL</div>
 
-    <p class="notice">
-      
-    </p>
+  <section id="authScreen" class="auth">
+    <div class="auth-logo">T-REX GAME</div>
+    <div class="auth-sub">Create a account to start Earning</div>
+    <div class="card">
+      <div class="field">
+        <label>Username</label>
+        <input id="username" maxlength="20" placeholder="Enter username" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="Demo password" autocomplete="current-password">
+      </div>
+      <button class="btn full" onclick="signup()">Create account</button>
+      <button class="btn secondary full" onclick="login()">Login</button>
+      <div id="authMsg" class="toast"></div>
+    </div>
+  </section>
 
-    <!-- Signup -->
-    <section id="signup">
-      <h3>Create  Account</h3>
-      <input
-        id="username"
-        placeholder="Choose username"
-        maxlength="20"
-        autocomplete="nickname"
-      >
-      <button onclick="signup()">Create Account</button>
-    </section>
+  <section id="site" class="hidden">
+    <main>
+      <div id="homePage">
+        <div class="card">
+          <div class="balance">
+            <div>
+              <div class="muted">Welcome back, <b id="welcomeName">Player</b></div>
+              <div class="money">₹<span id="balance">0</span></div>
+            </div>
+            <span class="pill">●  WALLET</span>
+          </div>
+          <div class="actions">
+            <button class="btn" onclick="showPage('deposit')">＋ Add  credits</button>
+            <button class="btn secondary" onclick="showPage('withdraw')">Withdrawal </button>
+          </div>
+        </div>
 
-    <!-- Game -->
-    <section id="game" class="hidden">
-      <p>Welcome, <b id="player"></b></p>
+        <div class="game-head">
+          <div class="period">
+            <div>
+              <div class="muted"> ROUND</div>
+              <b id="period">Round 1</b>
+            </div>
+            <div style="text-align:right">
+              <div class="muted">Next round in</div>
+              <div class="timer" id="timer">01:00</div>
+            </div>
+          </div>
+          <div class="resultbox">
+            <div class="ball greenbg" id="lastBall">?</div>
+            <div>
+              <b id="lastResult">Ready to play</b>
+              <div class="muted">Last Prediction result</div>
+            </div>
+          </div>
 
-      <p class="balance">
-        Payment Credits: ₹<span id="balance">0</span>
-      </p>
+        <div class="card">
+          <h3>1. Select a colour</h3>
+          <div class="colors">
+            <button class="pick red" onclick="selectColor('Red',this)">RED</button>
+            <button class="pick" style="background:#16a76a" onclick="selectColor('Green',this)">GREEN</button>
+            <button class="pick violet" onclick="selectColor('Violet',this)">VIOLET</button>
+          </div>
+          <h3 style="margin-top:20px">2. Or select a number</h3>
+          <div class="numbers" id="numberGrid"></div>
+          <p class="muted">Choose either a colour or a number, then submit your  prediction.</p>
+          <button class="btn full" onclick="play()">Submit prediction · 10 credits</button>
+          <div id="gameMsg" class="toast"></div>
+        </div>
 
-      <h3>Demo Top-up</h3>
-      <p>₹500 Money credits. </p>
-
-      <input
-        id="ref"
-        inputmode="numeric"
-        maxlength="12"
-        placeholder="12-digit utr , ref no. reference number"
-      >
-
-      <button onclick="topup()">Add ₹200 Credits</button>
-
-      <hr>
-
-      <h3>Colour trading Round</h3>
-      <p>Next round in: <b id="timer">60</b> seconds</p>
-
-      <div class="colors">
-        <button class="red" onclick="predict('Red')">RED</button>
-        <button class="green" onclick="predict('Green')">GREEN</button>
-        <button class="violet" onclick="predict('Violet')">VIOLET</button>
+        <div class="card">
+          <div class="top">
+            <h3>Practice history</h3>
+            <span class="pill">LATEST 8</span>
+          </div>
+          <table class="history">
+            <thead><tr><th>Round</th><th>Number</th><th>Colour</th></tr></thead>
+            <tbody id="history"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>only admin preview</h3>
+          <p class="muted">earning-only tool. It shows the next locally generated result .</p>
+          <button class="btn secondary full" onclick="adminPreview()">Preview next prediction result</button>
+          <div id="adminMsg" class="toast"></div>
+        </div>
+        <button class="link full" onclick="logout()">Log out</button>
       </div>
 
-      <p id="message">Choose a colour .</p>
-      <p id="history"></p>
+      <div id="depositPage" class="hidden">
+        <h2>Add credits</h2>
+        <div class="card center">
+          <div class="money">₹500</div>
+          <p class="muted">One -credit top-up for this  account</p>
+          <div class="qr">
+            <div class="qr-pattern"></div>
+            <div class="qr-label">EARNING ONLY<br>NOT FAKE</div>
+          </div>
+          <b>Demo QR-style graphic</b>
+          <div class="field" style="text-align:left">
+            <label>12-digit  reference utr number</label>
+            <input id="demoRef" inputmode="numeric" maxlength="12" placeholder="Example: 123456789012">
+          </div>
+          <button class="btn full" onclick="addCredits()">Add ₹500 demo credits</button>
+          <div id="depositMsg" class="toast"></div>
+        </div>
+        <button class="btn secondary full" onclick="showPage('home')">← Back to game</button>
+      </div>
 
-      <button class="secondary" onclick="logout()">
-        Log Out
-      </button>
-    </section>
-  </div>
+      <div id="withdrawPage" class="hidden">
+        <h2>Withdrawal </h2>
+        <div class="card">
+          <div class="balance">
+            <div><div class="muted">Available balance</div><div class="money">₹<span id="withdrawBalance">0</span></div></div>
+            <span class="pill">DEMO</span>
+          </div>
+          <div class="field">
+            <label>Demo payout method</label>
+            <select id="payoutMethod">
+              <option>UPI (demo)</option>
+              <option>PhonePe (demo)</option>
+              <option>Paytm (demo)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Demo amount (minimum ₹1000)</label>
+            <input id="withdrawAmount" type="number" min="1000" placeholder="Enter amount">
+          </div>
+          <div id="withdrawMsg" class="toast"></div>
+        </div>
+        <button class="btn secondary full" onclick="showPage('home')">← Back to game</button>
+      </div>
 
-  <script>
-    // Local browser storage: not a secure server account.
-    const USER_KEY = "trex_username";
-    const BALANCE_KEY = "trex_balance";
-    const CREDIT_KEY = "trex_credited";
+      <div id="accountPage" class="hidden">
+        <h2>My account</h2>
+        <div class="card">
+          <p>Username: <b id="accountName"></b></p>
+          <p> balance: <b>₹<span id="accountBalance">0</span></b></p>
+          <p class="muted">Your account is stored in this browser only. Clearing browser data may remove it. This is not secure authentication.</p>
+          <button class="btn secondary full" onclick="showPage('deposit')">Add  credits</button>
+          <button class="btn dark full" onclick="logout()">Log out</button>
+        </div>
+      </div>
+    </main>
 
-    let username = localStorage.getItem(USER_KEY) || "";
-    let balance = Number(localStorage.getItem(BALANCE_KEY) || 0);
-    let credited = localStorage.getItem(CREDIT_KEY) === "true";
+    <nav class="bottom">
+      <button class="nav active" data-page="home" onclick="showPage('home')"><span>⌂</span>Home</button>
+      <button class="nav" data-page="deposit" onclick="showPage('deposit')"><span>＋</span>Deposit</button>
+      <button class="nav" data-page="withdraw" onclick="showPage('withdraw')"><span>⇧</span>Withdraw</button>
+      <button class="nav" data-page="account" onclick="showPage('account')"><span>♙</span>Account</button>
+    </nav>
+  </section>
+</div>
 
-    let prediction = "";
-    let round = 1;
-    let seconds = 60;
+<script>
+const $ = id => document.getElementById(id);
+const getAccounts = () => {
+  try { return JSON.parse(localStorage.getItem('trex_demo_accounts') || '{}'); }
+  catch { return {}; }
+};
+let currentUser = localStorage.getItem('trex_demo_current') || '';
+let selected = null;
+let selectedType = '';
+let round = 1;
+let seconds = 60;
+let nextResult = null;
+let historyItems = [];
+let hasPlayedThisRound = false;
 
-    function saveAccount() {
-      localStorage.setItem(USER_KEY, username);
-      localStorage.setItem(BALANCE_KEY, String(balance));
-      localStorage.setItem(CREDIT_KEY, String(credited));
-      updateBalance();
-    }
+function saveAccounts(accounts) {
+  localStorage.setItem('trex_demo_accounts', JSON.stringify(accounts));
+}
+function currentAccount() {
+  return getAccounts()[currentUser];
+}
+function message(id, text) { $(id).textContent = text; }
 
-    function updateBalance() {
-      document.getElementById("balance").textContent = balance;
-    }
+function signup() {
+  const name = $('username').value.trim();
+  const pass = $('password').value;
+  if (!/^[a-zA-Z0-9_]{3,20}$/.test(name)) {
+    message('authMsg','Username must be 3–20 letters, numbers or underscores.'); return;
+  }
+  if (pass.length < 4) {
+    message('authMsg','For this demo, enter at least 4 characters.'); return;
+  }
+  const accounts = getAccounts();
+  if (accounts[name]) {
+    message('authMsg','Username already exists. Please log in.'); return;
+  }
+  accounts[name] = {password:pass,balance:0,credited:false};
+  saveAccounts(accounts);
+  currentUser = name;
+  localStorage.setItem('trex_demo_current',name);
+  enterSite();
+}
+function login() {
+  const name = $('username').value.trim();
+  const pass = $('password').value;
+  const account = getAccounts()[name];
+  if (!account || account.password !== pass) {
+    message('authMsg','Account not found or password incorrect.'); return;
+  }
+  currentUser = name;
+  localStorage.setItem('trex_demo_current',name);
+  enterSite();
+}
+function enterSite() {
+  if (!currentAccount()) { currentUser=''; return; }
+  $('authScreen').classList.add('hidden');
+  $('site').classList.remove('hidden');
+  $('welcomeName').textContent = currentUser;
+  $('accountName').textContent = currentUser;
+  refreshBalance();
+  showPage('home');
+}
+function logout() {
+  currentUser = '';
+  localStorage.removeItem('trex_demo_current');
+  $('site').classList.add('hidden');
+  $('authScreen').classList.remove('hidden');
+  $('password').value = '';
+  message('authMsg','You have logged out.');
+}
+function refreshBalance() {
+  const a = currentAccount();
+  if (!a) return;
+  $('balance').textContent = a.balance;
+  $('withdrawBalance').textContent = a.balance;
+  $('accountBalance').textContent = a.balance;
+}
+function changeBalance(amount) {
+  const accounts = getAccounts();
+  if (!accounts[currentUser]) return false;
+  accounts[currentUser].balance += amount;
+  saveAccounts(accounts);
+  refreshBalance();
+  return true;
+}
+function showPage(page) {
+  ['home','deposit','withdraw','account'].forEach(p => {
+    $(p+'Page').classList.toggle('hidden',p!==page);
+  });
+  document.querySelectorAll('.nav').forEach(n => {
+    n.classList.toggle('active',n.dataset.page===page);
+  });
+  if (page==='withdraw') $('withdrawBalance').textContent = currentAccount()?.balance ?? 0;
+  if (page==='account') {
+    $('accountName').textContent = currentUser;
+    $('accountBalance').textContent = currentAccount()?.balance ?? 0;
+  }
+}
+function addCredits() {
+  const ref = $('demoRef').value.trim();
+  if (!/^\d{12}$/.test(ref)) {
+    message('depositMsg','Enter exactly 12 digits as a demo reference.'); return;
+  }
+  const accounts = getAccounts();
+  if (accounts[currentUser].credited) {
+    message('depositMsg','This demo account has already received its ₹500 top-up.'); return;
+  }
+  accounts[currentUser].balance += 200;
+  accounts[currentUser].credited = true;
+  saveAccounts(accounts);
+  refreshBalance();
+  message('depositMsg','Success: ₹200 virtual  credits added.');
+}
+function requestWithdrawal() {
+  const amount = Number($('withdrawAmount').value);
+  if (!Number.isFinite(amount) || amount < 1000) {
+    message('withdrawMsg','For this demo, enter an amount of at least ₹1000.'); return;
+  }
+function selectColor(color,el) {
+  selected = color;
+  selectedType = 'color';
+  document.querySelectorAll('.pick,.num').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  message('gameMsg','Selected colour: '+color);
+}
+function selectNumber(num,el) {
+  selected = num;
+  selectedType = 'number';
+  document.querySelectorAll('.pick,.num').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  message('gameMsg','Selected number: '+num);
+}
+function colorFor(n) {
+  if (n===0 || n===5) return 'Violet';
+  return n%2===0 ? 'Red' : 'Green';
+}
+function colorClass(color) {
+  return color==='Red'?'redbg':color==='Green'?'greenbg':'purplebg';
+}
+function renderHistory() {
+  $('history').innerHTML = '';
+  historyItems.slice(0,8).forEach(h=>{
+    const tr=document.createElement('tr');
+    [h.round,h.number,h.color].forEach((value,i)=>{
+      const td=document.createElement('td');
+      td.textContent=value;
+      if(i===2) td.style.color=h.color==='Red'?'#e33':h.color==='Green'?'#159b63':'#8654d9';
+      tr.appendChild(td);
+    });
+    $('history').appendChild(tr);
+  });
+}
+function play() {
+  if (selected===null) { message('gameMsg','First select a colour or a number.'); return; }
+  if (hasPlayedThisRound) { message('gameMsg','One prediction per round. Wait for the next round.'); return; }
+  if (!currentAccount() || currentAccount().balance<10) {
+    message('gameMsg','Not enough credits. Use the credits page.'); return;
+  }
+  changeBalance(-10);
+  hasPlayedThisRound=true;
+  const choice=selected, type=selectedType, playedRound=round;
+  message('gameMsg','Prediction saved for round '+playedRound+'. Result appears when the timer ends.');
+  selected=null; selectedType='';
+  document.querySelectorAll('.pick,.num').forEach(b=>b.classList.remove('selected'));
+  // Resolve this round only after its timer reaches zero.
+  pendingPrediction={choice,type,playedRound};
+}
+let pendingPrediction=null;
+function finishRound() {
+  const n=Math.floor(Math.random()*10);
+  const color=colorFor(n);
+  $('lastBall').textContent=n;
+  $('lastBall').className='ball '+colorClass(color);
+  $('lastResult').textContent=n+' · '+color;
+  historyItems.unshift({round,number:n,color});
+  renderHistory();
 
-    function signup() {
-      const name = document.getElementById("username").value.trim();
+  if (pendingPrediction && pendingPrediction.playedRound===round) {
+    const p=pendingPrediction;
+    const won = p.type==='number' ? Number(p.choice)===n : p.choice===color;
+    if (won) {
+      changeBalance(20);
+      message('gameMsg','Correct prediction! 20 virtual credits returned. (10 entry + 10 net gain)');
+  }
+  pendingPrediction=null;
+  round++;
+  $('period').textContent='Round '+round;
+  hasPlayedThisRound=false;
+  nextResult=null;
+}
+function adminPreview() {
+  if (nextResult===null) nextResult=Math.floor(Math.random()*10);
+  message('adminMsg','Next result preview: '+nextResult+' · '+colorFor(nextResult)+'. This preview is local to this browser and is not a real game control.');
+}
+$('numberGrid').innerHTML='';
+for(let n=0;n<10;n++){
+  const b=document.createElement('button');
+  b.className='num'; b.textContent=n;
+  b.onclick=()=>selectNumber(n,b);
+  $('numberGrid').appendChild(b);
+}
+setInterval(()=>{
+  if ($('site').classList.contains('hidden')) return;
+  seconds--;
+  if(seconds<=0){finishRound();seconds=60;}
+  $('timer').textContent='00:'+String(seconds).padStart(2,'0');
+},1000);
 
-      if (!name) {
-        alert("Username enter karo.");
-        return;
-      }
-
-      username = name;
-      saveAccount();
-      showGame();
-    }
-
-    function showGame() {
-      document.getElementById("player").textContent = username;
-      document.getElementById("signup").classList.add("hidden");
-      document.getElementById("game").classList.remove("hidden");
-      updateBalance();
-    }
-
-    function topup() {
-      const ref = document.getElementById("ref").value.trim();
-
-      if (!/^\d{12}$/.test(ref)) {
-        alert("12-digit demo reference number enter karo.");
-        return;
-      }
-
-      if (credited) {
-        alert(" top-up is browser session account mein pehle use ho chuka hai.");
-        return;
-      }
-
-      balance += 500;
-      credited = true;
-      saveAccount();
-
-      document.getElementById("ref").value = "";
-      document.getElementById("message").textContent =
-        "₹200  credits add .";
-    }
-
-    function predict(color) {
-      if (balance < 10) {
-        document.getElementById("message").textContent =
-          "Practice ke liye pehle  credits add karo.";
-        return;
-      }
-
-      prediction = color;
-
-      document.getElementById("message").textContent =
-        "Your prediction: " + color +
-        ". Result round ke end par aayega.";
-    }
-
-    function finishRound() {
-      const colors = ["Red", "Green", "Violet"];
-      const result = colors[Math.floor(Math.random() * colors.length)];
-
-      let text = "Round " + round + " result: " + result + ". ";
-
-      if (prediction && prediction === result) {
-        balance += 20;
-        text += "+20 credits.";
-      } else if (prediction) {
-        balance = Math.max(0, balance - 10);
-        text += "-10 credits.";
-      } else {
-        text += "No prediction made.";
-      }
-
-      saveAccount();
-
-      document.getElementById("history").textContent = text;
-      document.getElementById("message").textContent =
-        "New practice round started.";
-
-      prediction = "";
-      round++;
-      seconds = 60;
-    }
-
-    function logout() {
-      username = "";
-      prediction = "";
-
-      // Preserve balance and top-up status on this browser.
-      localStorage.removeItem(USER_KEY);
-
-      document.getElementById("game").classList.add("hidden");
-      document.getElementById("signup").classList.remove("hidden");
-      document.getElementById("username").value = "";
-      document.getElementById("message").textContent = "";
-    }
-
-    // Restore account on page reload.
-    if (username) {
-      showGame();
-    }
-
-    setInterval(function () {
-      if (document.getElementById("game").classList.contains("hidden")) {
-        return;
-      }
-
-      seconds--;
-      document.getElementById("timer").textContent = seconds;
-
-      if (seconds <= 0) {
-        finishRound();
-        document.getElementById("timer").textContent = seconds;
-      }
-    }, 1000);
-  </script>
+if(currentUser && currentAccount()) enterSite();
+</script>
 </body>
 </html>
